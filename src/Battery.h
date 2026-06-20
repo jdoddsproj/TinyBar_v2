@@ -28,6 +28,16 @@
 #define DEFAULT_U_POWER_DEVICE "org.freedesktop.UPower.Device"
 #define DISPLAY_DEVICE_DEVICE_PATH "/org/freedesktop/UPower/devices/DisplayDevice"
 
+enum BatteryState {
+    Unknown = 0,
+    Charging = 1,
+    Discharging = 2,
+    Empty = 3,
+    FullyCharged = 4,
+    PendingCharge = 5,
+    PendingDischarge = 6
+};
+
 class Battery : public QWidget {
     Q_OBJECT
 public:
@@ -39,11 +49,14 @@ public:
     void setPadding(float p);
     void setRounding(float r);
 
-    void setChargedSideColor(QColor color);
-    void setEmptySideColor(QColor color);
-    void setBatteryLowColor(QColor color);
-    void setIsChargingColor(QColor color);
-    void setTextColor(QColor color);
+    void setChargedSideColor(const QColor& color);
+    void setEmptySideColor(const QColor& color);
+    void setBatteryLowColor(const QColor& color);
+    void setIsChargingColor(const QColor& color);
+    void setTextColor(const QColor& color);
+    void setFont(const QFont& font);
+
+    void transparentText(bool transparent);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -51,9 +64,11 @@ protected:
 private slots:
     void handleProperties(const QString& path, const QVariantMap& changed, const QStringList& invalidated);
     void updateBatteryLevel(float percent);
-    void isCharging(u_int32_t state);
+    void isCharging(quint8 state);
 
 private:
+    const QColor& getBatteryStateColor() const;
+
     float m_width = 0.0;
     float m_height = 0.0;
     float m_padding = 0.0;
@@ -67,6 +82,10 @@ private:
     QColor m_batteryLowColor;
     QColor m_chargingColor;
     QColor m_textColor;
+
+    QFont m_font;
+
+    QPainter::CompositionMode m_textCompMode;
 };
 
 #endif // BATTERY_H

@@ -49,7 +49,9 @@ void BarManager::initLayout() {
 
     m_centerLayout->addWidget(new TinyClock(this), 0, Qt::AlignCenter);
 
-    m_rightLayout->addWidget(new Battery(30, 16, this), 0, Qt::AlignRight);
+    Battery* bat = new Battery(30, 16, this);
+    bat->transparentText(true);
+    m_rightLayout->addWidget(bat, 0, Qt::AlignRight);
 
     mainLayout->addWidget(m_leftArea);
     mainLayout->addWidget(m_centerArea);
