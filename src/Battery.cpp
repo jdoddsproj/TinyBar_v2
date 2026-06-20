@@ -17,37 +17,25 @@ Battery::Battery(float w, float h, QWidget* parent)
 
     setFixedSize(m_width + m_padding * 2.0, m_height + m_padding * 2.0);
 
-
-    DBusObject* battery = new DBusObject(
+    DBusObject* displayDevice = new DBusObject(
         DEFAULT_U_POWER_IFACE,
-        BATTERY_DEVICE_PATH,
+        DISPLAY_DEVICE_DEVICE_PATH,
         DEFAULT_U_POWER_DEVICE,
         true,
         this
     );
-    DBusObject* charger = new DBusObject(
-        DEFAULT_U_POWER_IFACE,
-        CHARGER_DEVICE_PATH,
-        DEFAULT_U_POWER_DEVICE,
-        true,
-        this
-        );
 
-    battery->connectSignal(
+    displayDevice->connectSignal(
         "PropertiesChanged",
         this,
         SLOT(handleProperties(QString, QVariantMap, QStringList))
     );
-    charger->connectSignal(
-        "PropertiesChanged",
-        this,
-        SLOT(handleProperties(QString, QVariantMap, QStringList))
-        );
 
-    updateBatteryLevel(battery->property<float>("Percentage"));
-    isCharging(charger->property<bool>("Online"));
+    updateBatteryLevel(displayDevice->property<float>("Percentage"));
+    isCharging(displayDevice->property<u_int32_t>("State"));
 }
 
+// PROTECTED
 void Battery::paintEvent(QPaintEvent* event) {
     Q_UNUSED(event);
 
@@ -86,21 +74,9 @@ void Battery::paintEvent(QPaintEvent* event) {
     painter.setFont(font);
     painter.setPen(m_textColor);
     painter.drawText(rect, Qt::AlignCenter, (QString::number(m_percent * 100.0)));
-
-    // Draw sheen (WIP)
-    /*
-    path.addRoundedRect(rect, m_rounding, m_rounding);
-    painter.setClipPath(path);
-
-    QLinearGradient sheenGrad(midX - rect.width(), rect.top(), midX + rect.width() * 0.3, rect.bottom());
-    sheenGrad.setColorAt(0.0, QColor(255, 255, 255, 0));
-    sheenGrad.setColorAt(0.5, QColor(255, 255, 255, 70));
-    sheenGrad.setColorAt(1.0, QColor(255, 255, 255, 0));
-
-    painter.fillRect(rect, sheenGrad);
-    */
 }
 
+// PUBLIC
 void Battery::setWidth(float w) {
     if (w < 1.0) {
         w = 1.0;
@@ -158,7 +134,7 @@ void Battery::setTextColor(QColor color) {
     update();
 }
 
-
+// SLOTS
 void Battery::handleProperties(const QString& path, const QVariantMap& changed, const QStringList& invalidated) {
     Q_UNUSED(path);
     Q_UNUSED(invalidated);
@@ -167,8 +143,8 @@ void Battery::handleProperties(const QString& path, const QVariantMap& changed, 
         float percent = changed["Percentage"].toFloat();
         updateBatteryLevel(percent);
     }
-    else if (changed.contains("Online")) {
-        isCharging(changed["Online"].toBool());
+    else if (changed.contains("State")) {
+        isCharging(changed["State"].toInt());
     }
 }
 
@@ -177,8 +153,13 @@ void Battery::updateBatteryLevel(float percent) {
     update();
 }
 
-void Battery::isCharging(bool charging) {
-    m_isCharging = charging;
+void Battery::isCharging(u_int32_t state) {
+    if (state == 1 or state == 5) {
+        m_isCharging = true;
+    }
+    else {
+        m_isCharging= false;
+    }
     update();
 }
 

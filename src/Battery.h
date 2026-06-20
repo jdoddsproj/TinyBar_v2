@@ -16,7 +16,7 @@
 
 #define LOW_THRESHOLD 0.20 // 0.00-1.00
 #define DEFAULT_COLOR Qt::white
-#define DEFAULT_LOW_COLOR QColor(255, 42, 0) // orangish red
+#define DEFAULT_LOW_COLOR QColor(255, 42, 0) // Orangish red
 #define DEFAULT_CHARGING_COLOR Qt::green
 #define DEFAULT_EMPTY_COLOR Qt::lightGray
 #define DEFAULT_TEXT_COLOR QColor(102, 102, 89) // Dark gray
@@ -26,9 +26,7 @@
 #define DEFAULT_U_POWER_IFACE "org.freedesktop.UPower"
 #define DEFAULT_U_POWER_PATH "/org/freedesktop/UPower/devices"
 #define DEFAULT_U_POWER_DEVICE "org.freedesktop.UPower.Device"
-#define BATTERY_DEVICE_PATH "/org/freedesktop/UPower/devices/battery_BAT0"
-#define CHARGER_DEVICE_PATH "/org/freedesktop/UPower/devices/line_power_AC"
-
+#define DISPLAY_DEVICE_DEVICE_PATH "/org/freedesktop/UPower/devices/DisplayDevice"
 
 class Battery : public QWidget {
     Q_OBJECT
@@ -53,7 +51,7 @@ protected:
 private slots:
     void handleProperties(const QString& path, const QVariantMap& changed, const QStringList& invalidated);
     void updateBatteryLevel(float percent);
-    void isCharging(bool charging);
+    void isCharging(u_int32_t state);
 
 private:
     float m_width = 0.0;
