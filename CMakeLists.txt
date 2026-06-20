@@ -42,13 +42,6 @@ target_link_libraries(TinyBarCore
 qt_add_resources(TinyBarCore
     PREFIX "/"
     FILES
-        resources/battery-empty.svg
-        resources/battery-full.svg
-        resources/battery-half.svg
-        resources/battery-quarter.svg
-        resources/battery-three-quarters.svg
-        resources/bolt.svg
-        resources/plug-circle-bolt.svg
         resources/settings-gear.svg
 )
 
