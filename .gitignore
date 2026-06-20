@@ -85,3 +85,4 @@ CMakeLists.txt.user*
 
 # Other
 compile_commands.json
+src/BatteryOld.cpp src/BatteryOld.h
