@@ -89,7 +89,6 @@ src/BatteryOld.cpp src/BatteryOld.h
 src/UPower.cpp src/UPowerDevice.cpp src/UPowerDevice.h src/UPower.h src/UPowerTypes.h
 src/batterynew.h
 src/IpcClient.h
-tests/
 resources/battery-empty.svg resources/battery-full.svg resources/battery-half.svg resources/battery-quarter.svg resources/battery-three-quarters.svg
 resources/bolt.svg
 resources/plug-circle-bolt.svg
